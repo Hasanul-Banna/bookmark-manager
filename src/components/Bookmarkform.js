@@ -24,7 +24,7 @@ const Bookmarkform = ({ handleSubmit, userInputs, setCategoryExist, setUserInput
                 />
             </Form.Group>
             <Form.Group className="mb-2">
-                <Form.Label>Url</Form.Label>
+                <Form.Label>Url (e.g: https://example.com)</Form.Label>
                 <Form.Control
                     required
                     pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
@@ -49,7 +49,7 @@ const Bookmarkform = ({ handleSubmit, userInputs, setCategoryExist, setUserInput
                             <option
                                 key={catgry.name}
                                 value={catgry.name}
-                                selected={catgry.name === userInputs.category}
+                            // selected={catgry.name === userInputs.category}
                             >
                                 {catgry.name}
                             </option>

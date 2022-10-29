@@ -39,6 +39,7 @@ const Home = () => {
       dispatch(addCategories({ name: userInputs.category }));
       setNewCategory(false);
     }
+
     dispatch(addBookmark(userInputs));
     setUserInputs({
       title: "",
@@ -55,7 +56,7 @@ const Home = () => {
           Add Bookmark
         </Button>
       </div>
-      <Container>
+      <Container className="py-4">
         <Row>
           <Col md="6">
             <p>Bookmark Categories</p>
