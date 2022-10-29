@@ -15,7 +15,10 @@ const Home = () => {
   const [newCategory, setNewCategory] = useState(false);
   const [isCategoryExist, setCategoryExist] = useState(false);
 
-  const toggleModal = () => setShow(!show);
+  const toggleModal = () => {
+    setNewCategory(false);
+    setShow(!show);
+  };
   const [userInputs, setUserInputs] = useState({
     title: "",
     url: "",

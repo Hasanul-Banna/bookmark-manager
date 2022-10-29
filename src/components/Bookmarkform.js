@@ -27,7 +27,7 @@ const Bookmarkform = ({ handleSubmit, userInputs, setCategoryExist, setUserInput
                 <Form.Label>Url</Form.Label>
                 <Form.Control
                     required
-                    pattern="https?://.+"
+                    pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
                     name="url"
                     id="url"
                     value={userInputs.url}
@@ -60,7 +60,10 @@ const Bookmarkform = ({ handleSubmit, userInputs, setCategoryExist, setUserInput
                     <Button
                         variant="info"
                         size="sm"
-                        onClick={() => setNewCategory(!newCategory)}
+                        onClick={() => {
+                            // setUserInputs({ ...userInputs, category: "" });
+                            setNewCategory(!newCategory)
+                        }}
                     >
                         +
                     </Button>
