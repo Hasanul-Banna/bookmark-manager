@@ -1,36 +1,48 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  Modal,
-  Row,
-} from "react-bootstrap";
+import { Button, Col, Container, Modal, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { addBookmark, setBookmarkDetails } from "../store/slices/counterSlice";
+import BookmarkDetails from "../components/BookmarkDetails";
+import Bookmarkform from "../components/Bookmarkform";
+import CategoriesCard from "../components/CategoriesCard";
+import { addBookmark, addCategories } from "../store/slices/bookmarkSlice";
 
 const Home = () => {
   const { bookmarks, categories, bookmarkDetails } = useSelector(
-    (state) => state.counter
+    (state) => state.bookmark
   );
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
+  const [newCategory, setNewCategory] = useState(false);
+  const [isCategoryExist, setCategoryExist] = useState(false);
 
   const toggleModal = () => setShow(!show);
   const [userInputs, setUserInputs] = useState({
     title: "",
     url: "",
-    category: "B",
+    category: "Category A",
   });
-  const handleChange = (e) => {
-    setUserInputs({ ...userInputs, [e.target.name]: e.target.value });
-  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(userInputs);
+    if (newCategory) {
+      const names = categories.map((category) =>
+        String(category.name).toLowerCase()
+      );
+      const isExist = names.includes(userInputs.category.toLowerCase());
+      if (isExist) {
+        setCategoryExist(true);
+        return 0;
+      }
+      dispatch(addCategories({ name: userInputs.category }));
+      setNewCategory(false);
+    }
     dispatch(addBookmark(userInputs));
+    setUserInputs({
+      title: "",
+      url: "",
+      category: "Category A",
+    });
+    toggleModal();
   };
   return (
     <div>
@@ -44,55 +56,12 @@ const Home = () => {
         <Row>
           <Col md="6">
             <p>Bookmark Categories</p>
-            {categories.map((catgry, index) => (
-              <Card key={index + 1} className="my-2 p-2">
-                <p>{catgry.name}</p>
-                <div
-                  className="overflow-auto border"
-                  style={{ maxHeight: "100px" }}
-                >
-                  {bookmarks
-                    .filter((bookmark) => bookmark.category === catgry.name)
-                    .map((bookmark, index) => (
-                      <div
-                        className="d-flex justify-content-between p-2"
-                        key={index + 1000}
-                      >
-                        <a
-                          href={bookmark.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-truncate"
-                          style={{ maxWidth: "50%" }}
-                        >
-                          {bookmark.title}
-                        </a>
-                        <Button
-                          variant="info"
-                          size="sm"
-                          onClick={() => dispatch(setBookmarkDetails(bookmark))}
-                        >
-                          Details
-                        </Button>
-                      </div>
-                    ))}
-                </div>
-              </Card>
-            ))}
+            <CategoriesCard categories={categories} bookmarks={bookmarks} />
           </Col>
           <Col md="6">
-            <p>Bookmark Details</p>
-            <Card className="p-2">
-              <p>
-                <b>Title:</b> {bookmarkDetails?.title}
-              </p>
-              <p>
-                <b>Url:</b> {bookmarkDetails?.url}
-              </p>
-              <p>
-                <b>Category:</b> {bookmarkDetails?.category}
-              </p>
-            </Card>
+            {bookmarkDetails?.title && (
+              <BookmarkDetails bookmarkDetails={bookmarkDetails} />
+            )}
           </Col>
         </Row>
       </Container>
@@ -102,55 +71,16 @@ const Home = () => {
           <Modal.Title>Add Bookmark</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-2">
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                required
-                name="title"
-                id="title"
-                maxLength={3}
-                value={userInputs.title}
-                onChange={handleChange}
-                type="text"
-                placeholder="bookmark title..."
-              />
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label>Url</Form.Label>
-              <Form.Control
-                required
-                pattern="https?://.+"
-                name="url"
-                id="url"
-                value={userInputs.url}
-                onChange={handleChange}
-                type="text"
-                placeholder="https://example.com"
-              />
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label>Categories</Form.Label>
-              <Form.Select
-                // aria-label="Default select example"
-                name="category"
-                onChange={handleChange}
-                // disabled
-              >
-                {categories.map((catgry) => (
-                  <option key={catgry.name} value={catgry.name}>
-                    {catgry.name}
-                  </option>
-                ))}
-                {/* <option value={null}>Select...</option> */}
-              </Form.Select>
-            </Form.Group>
-            <div className="text-center">
-              <Button variant="primary" type="submit" size="sm">
-                Submit
-              </Button>
-            </div>
-          </Form>
+          <Bookmarkform
+            handleSubmit={handleSubmit}
+            userInputs={userInputs}
+            setCategoryExist={setCategoryExist}
+            setUserInputs={setUserInputs}
+            newCategory={newCategory}
+            categories={categories}
+            setNewCategory={setNewCategory}
+            isCategoryExist={isCategoryExist}
+          />
         </Modal.Body>
       </Modal>
     </div>
